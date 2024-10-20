@@ -1,0 +1,4 @@
+pytest == 8.*
+PyYAML == 6.*
+spacy == 3.*
+pymusas == 0.3.*
