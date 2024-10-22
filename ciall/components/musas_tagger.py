@@ -17,36 +17,36 @@ from ciall.utils.musas_tags import MultiSenseTag
 
 
 # This is a duplicate of 'pymusas_tags' set by pymusas' spacy RuleBasedTagger.__init__() function
-Token.set_extension("pymusas_tags", default=None)
-def pymusas_tags_str(token):
-    if token._.pymusas_tags is None:
+Token.set_extension("musas_tags", default=None)
+def musas_tags_str(token):
+    if token._.musas_tags is None:
         tags_str = ""
     else:
-        tags_str = " ".join(token._.pymusas_tags)
+        tags_str = " ".join(token._.musas_tags)
     return tags_str
-Token.set_extension("pymusas_tags_str", method=pymusas_tags_str)
+Token.set_extension("musas_tags_str", method=musas_tags_str)
 
 # USAS_Description
 def pymusas_desc_str(token):
-    if token._.pymusas_tags is None:
+    if token._.musas_tags is None:
         desc_str = ""
     else:
-        mst = MultiSenseTag(token._.pymusas_tags[0])
+        mst = MultiSenseTag(token._.musas_tags[0])
         desc_str = mst.senses[0].description
     return desc_str
-Token.set_extension("pymusas_desc_str", method=pymusas_desc_str)
+Token.set_extension("musas_desc_str", method=pymusas_desc_str)
 
 # This is a duplicate of 'pymusas_mwe_indexes' set by pymusas' spacy RuleBasedTagger.__init__() function
-Token.set_extension("pymusas_mwe_indexes", default=None)
-def pymusas_mwe_indexes_str(token):
-    if token._.pymusas_mwe_indexes is None:
+Token.set_extension("musas_mwe_indexes", default=None)
+def musas_mwe_indexes_str(token):
+    if token._.musas_mwe_indexes is None:
         mwe_index_str = ""
     else:
         # NOTE: This only prints out the first mwe index
-        start, end = token._.pymusas_mwe_indexes[0]
+        start, end = token._.musas_mwe_indexes[0]
         mwe_index_str = "(%s, %s)" % (start, end)
     return mwe_index_str
-Token.set_extension("pymusas_mwe_indexes_str", method=pymusas_mwe_indexes_str)
+Token.set_extension("musas_mwe_indexes_str", method=musas_mwe_indexes_str)
 
 
 WILDCARD_LEXICON = {
@@ -99,7 +99,7 @@ WILDCARD_LEXICON = {
 
 
 # The PyMUSAS component factory
-@Language.factory("musas_tagger", default_config={"sw_lexicon": None, "mw_lexicon": None})
+@Language.factory("ciall_musas_tagger", default_config={"sw_lexicon": None, "mw_lexicon": None})
 def create_musas_tagger_component(nlp: Language, name: str, sw_lexicon: str, mw_lexicon: str):
     return MUSASTagger(nlp, sw_lexicon, mw_lexicon)
 
@@ -160,9 +160,9 @@ class MUSASTagger:
             if token.text.strip() == "":  # do nothing for blank tokens, newlines etc
                 continue
             #token._.ifst_matches[0].sem_tags = result[0] # store it in the first match too <- this is crazy
-            token._.pymusas_tags = result[0]
-            token._.pymusas_mwe_indexes = result[1]
-            #print("%s\t%s\t%s\t%s\t%s" % (token.text, token.lemma_, token._.par_long, token._.par_short, token._.pymusas_tags))
+            token._.musas_tags = result[0]
+            token._.musas_mwe_indexes = result[1]
+            #print("%s\t%s\t%s\t%s\t%s" % (token.text, token.lemma_, token._.par_long, token._.par_short, token._.musas_tags))
 
         # # Read wildcard lemma lexicon
         # wildcards = {}
@@ -177,9 +177,9 @@ class MUSASTagger:
 
         # Run wildcard lemma lexicon
         for token in doc:
-            #print(token, token._.par_short, token._.pymusas_tags)
-            if token._.par_short in WILDCARD_LEXICON and token._.pymusas_tags[0] == "Z99":
-                #print(token.text, token._.pymusas_tags, wildcards[token._.par_short])
-                token._.pymusas_tags = [WILDCARD_LEXICON[token._.par_short]]
+            #print(token, token._.par_short, token._.musas_tags)
+            if token._.par_short in WILDCARD_LEXICON and token._.musas_tags[0] == "Z99":
+                #print(token.text, token._.musas_tags, wildcards[token._.par_short])
+                token._.musas_tags = [WILDCARD_LEXICON[token._.par_short]]
 
         return doc

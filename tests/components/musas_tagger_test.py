@@ -13,7 +13,7 @@ TEST_MW_LEXICON = CURR_DIR + "/test_mw_lexicon.tsv"
 
 def process_test_text(test_text):
     nlp = spacy.blank("ga")
-    nlp.add_pipe("musas_tagger", config={'sw_lexicon': TEST_SW_LEXICON, 'mw_lexicon': TEST_MW_LEXICON})
+    nlp.add_pipe("ciall_musas_tagger", config={'sw_lexicon': TEST_SW_LEXICON, 'mw_lexicon': TEST_MW_LEXICON})
 
     words = [t[0] for t in test_text]
     spaces = [True for t in test_text]
@@ -62,8 +62,8 @@ class TestMUSASTagger(unittest.TestCase):
         for token, sem_tags in zip (doc, expected_sem_tags):
             if isinstance(sem_tags, str):
                 sem_tags = [sem_tags]
-            self.assertEqual(sem_tags, token._.pymusas_tags, "For '%s' expected %s, got %s" % \
-                             (token.text, sem_tags, token._.pymusas_tags))
+            self.assertEqual(sem_tags, token._.musas_tags, "For '%s' expected %s, got %s" % \
+                             (token.text, sem_tags, token._.musas_tags))
 
     def test_multi_word_expressions(self):
         test_text = [
@@ -111,9 +111,9 @@ class TestMUSASTagger(unittest.TestCase):
 
         result = {}
         for token in doc:
-            #print("%s\t%s\t%s\t%s" % (token.text, token.lemma_, token._.par_short, token._.pymusas_tags))
+            #print("%s\t%s\t%s\t%s" % (token.text, token.lemma_, token._.par_short, token._.musas_tags))
             if token.text in expected_result:
-                result[token.text] = (token.lemma_, token._.pymusas_tags[0])
+                result[token.text] = (token.lemma_, token._.musas_tags[0])
 
         for text in expected_result.keys():
             self.assertEqual(result[text], expected_result[text],
@@ -141,5 +141,5 @@ class TestMUSASTagger(unittest.TestCase):
         for token, sem_tags in zip (doc, expected_sem_tags):
             if isinstance(sem_tags, str):
                 sem_tags = [sem_tags]
-            self.assertEqual(sem_tags, token._.pymusas_tags, "For '%s' expected %s, got %s" % \
-                             (token.text, sem_tags, token._.pymusas_tags))
+            self.assertEqual(sem_tags, token._.musas_tags, "For '%s' expected %s, got %s" % \
+                             (token.text, sem_tags, token._.musas_tags))
