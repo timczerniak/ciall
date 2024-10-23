@@ -21,6 +21,9 @@ Doc.set_extension("musas_field_stats", default={})
 # Document-level disambiguation
 @Language.component("ciall_doc_tags")
 def doc_tags_function(doc):
+    """
+    This component depends on the ciall_musas_tagger being in the pipeline before it
+    """
 
     fields = defaultdict(lambda: 0)
 
