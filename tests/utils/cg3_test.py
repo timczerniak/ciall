@@ -1,6 +1,8 @@
 import unittest
 
-from ciall.utils.cg3 import CG3Document
+import spacy
+
+from ciall.utils import cg3
 
 
 CG3_TESTFILE = """"<Níl>"
@@ -40,7 +42,7 @@ class CG3DocumentTest(unittest.TestCase):
         """
         Test that the parser parses correctly
         """
-        cg3doc = CG3Document.from_string(CG3_TESTFILE)
+        cg3doc = cg3.CG3Document.from_string(CG3_TESTFILE)
         cg3doc.reorder_by_lemma_freq()
         self.assertEqual(cg3doc.tokens[0].token, "Níl")
         self.assertEqual(cg3doc.tokens[0].matches[0].lemma, "bí")
@@ -49,14 +51,25 @@ class CG3DocumentTest(unittest.TestCase):
         self.assertEqual(cg3doc.tokens[0].matches[0].par_tag_short, "Vm")
         self.assertEqual(cg3doc.tokens[0].matches[0].udep_tag, "VERB")
         self.assertEqual(cg3doc.tokens[0].matches[0].dep_tags, ["@FMV", "#1->0"])
-    
+
     def test_freq_reorder(self):
         """
         Test that the lemmafreq reordering works
         """
-        cg3doc = CG3Document.from_string(CG3_TESTFILE)
+        cg3doc = cg3.CG3Document.from_string(CG3_TESTFILE)
         self.assertEqual(cg3doc.tokens[2].matches[0].lemma, "scrúdú")
         self.assertEqual(cg3doc.tokens[2].matches[1].lemma, "bí")
         cg3doc.reorder_by_lemma_freq()
         self.assertEqual(cg3doc.tokens[2].matches[0].lemma, "bí")
         self.assertEqual(cg3doc.tokens[2].matches[1].lemma, "scrúdú")
+
+    def test_doc_from_cg3(self):
+        nlp = spacy.blank("ga")
+        doc = cg3.doc_from_cg3(nlp, CG3_TESTFILE)
+        self.assertEqual(doc[0].text, "Níl")
+        self.assertEqual(doc[0].lemma_, "bí")
+        self.assertEqual(doc[0]._.morph_tags, ["Verb", "VI", "PresInd", "Neg"])
+        self.assertEqual(doc[0]._.par_long, "Vmip---n")
+        self.assertEqual(doc[0]._.par_short, "Vm")
+        self.assertEqual(doc[0].pos_, "VERB")
+        self.assertEqual(doc[0]._.dep_tags, ["@FMV", "#1->0"])

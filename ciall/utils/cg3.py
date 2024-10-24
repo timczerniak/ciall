@@ -1,6 +1,8 @@
 import sys, os
 from dataclasses import dataclass, field
 
+import spacy
+
 from ciall.utils.pos2par import pos2par
 from ciall.utils.lemmafreq import lemmafreq
 
@@ -124,3 +126,31 @@ class CG3Document(object):
             if len(set([m.lemma for m in self.tokens[i].matches])) > 1:
                 # CG3Entry and CG3Match are immutable (they are NamedTuples)
                 self.tokens[i].matches = sorted(self.tokens[i].matches, key=lambda m: lemmafreq(m.lemma), reverse=True)
+
+
+def doc_from_cg3(nlp: spacy.language.Language, cg3: str):
+    cg3doc = CG3Document.from_string(cg3)
+    cg3doc.reorder_by_lemma_freq()
+
+    # Create the Doc object
+    words = []
+    spaces = []
+    for token in cg3doc.tokens:
+        words.append(token.token)
+        spaces.append(True)  # TODO: something more intelligent?
+    doc = spacy.tokens.doc.Doc(vocab=nlp.vocab, words=words, spaces=spaces)
+
+    # update the attributes of the doc object with cg3 information
+    for i in range(len(doc)):
+        # Firstly, add all matches from the irishfst pipeline
+        doc[i]._.ifst_matches = cg3doc.tokens[i].matches
+        # Lemmatizer
+        doc[i].lemma_ = doc[i]._.ifst_matches[0].lemma
+        # POS tagger
+        doc[i].pos_ = doc[i]._.ifst_matches[0].udep_tag
+        doc[i]._.par_long = doc[i]._.ifst_matches[0].par_tag_long
+        doc[i]._.par_short = doc[i]._.ifst_matches[0].par_tag_short
+        doc[i]._.morph_tags = doc[i]._.ifst_matches[0].morph_tags
+        doc[i]._.dep_tags = doc[i]._.ifst_matches[0].dep_tags
+
+    return doc
