@@ -4,7 +4,7 @@ import spacy
 from ciall.utils.tsv import doc_from_tuples, doc_from_tsv, output_tsv
 
 
-class TestIO(unittest.TestCase):
+class TSVTest(unittest.TestCase):
 
     def test_doc_from_tuples(self):
         tuples = [

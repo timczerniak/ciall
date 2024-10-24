@@ -37,7 +37,8 @@ CG3_TESTFILE = """"<Níl>"
 """
 
 
-class CG3DocumentTest(unittest.TestCase):
+class CG3Test(unittest.TestCase):
+
     def test_parsing(self):
         """
         Test that the parser parses correctly
