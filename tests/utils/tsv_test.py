@@ -115,6 +115,6 @@ class TestIO(unittest.TestCase):
 
         nlp = spacy.blank("ga")
         doc = doc_from_tsv(nlp, intsv)
-        outtsv = output_tsv(doc, ('TOKEN', 'LEMMA', 'PAROLE'))
+        outtsv = output_tsv(doc, ['TOKEN', 'LEMMA', 'PAROLE'])
 
         self.assertEqual(intsv, outtsv)

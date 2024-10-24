@@ -95,7 +95,7 @@ def doc_from_tsv(nlp: spacy.language.Language, tsv: str, fields: list[str] = [])
     return doc_from_tuples(nlp, tuples, fields)
 
 
-def output_tsv(doc: spacy.tokens.doc.Doc, fields: tuple[str]):
+def output_tsv(doc: spacy.tokens.doc.Doc, fields: list[str]):
     for f in fields:
         if f not in VALID_FIELDS:
             raise TypeError("Invalid output field: '%s'" % f)
