@@ -27,6 +27,26 @@ class TestIO(unittest.TestCase):
         self.assertEqual(doc[0]._.par_long, "Vmxx")
         self.assertEqual(doc[0]._.par_short, "Vm")
 
+    def test_doc_from_tuples_all_fields(self):
+        tuples = [
+            ("TOKEN", "LEMMA", "POS",  "PAROLE", "PAR_SHORT", "MORPH_TAGS",          "DEP_TAGS"        ),
+            ("Níl",   "bí",    "VERB", "Vmxx",   "Vm",        "Verb VI PresInd Neg", "^Níl^ @FMV #1->0"),
+            ("aon",   "aon",   "DET",  "Dqxx",   "Dq",        "Det Qty Def",         "^aon^ @>N #2->1" ),
+        ]
+
+        nlp = spacy.blank("ga")
+        doc = doc_from_tuples(nlp, tuples)
+
+        self.assertIsInstance(doc, spacy.tokens.doc.Doc)
+
+        self.assertEqual(doc[0].text, "Níl")
+        self.assertEqual(doc[0].lemma_, "bí")
+        self.assertEqual(doc[0].pos_, "VERB")
+        self.assertEqual(doc[0]._.par_long, "Vmxx")
+        self.assertEqual(doc[0]._.par_short, "Vm")
+        self.assertEqual(sorted(doc[0]._.morph_tags), ["Neg", "PresInd", "VI", "Verb", ])
+        self.assertEqual(sorted(doc[0]._.dep_tags), ["#1->0", "@FMV", "^Níl^"])
+
     def test_doc_from_tsv(self):
         tsv = "TOKEN\tLEMMA\tPAROLE\n" \
               "Níl\tbí\tVmxx\n" \

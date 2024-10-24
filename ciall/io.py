@@ -7,20 +7,17 @@ from ciall.utils.pos2par import pos2par, shorten_par_tag
 
 
 VALID_FIELDS = [
-    # Added by the pipeline
-    "ID",               # The token ID (line number)
-
     # Input fields
     "TOKEN",            # The raw token text (word)
     "LEMMA",            # The lemma
-    "MORPH_TAGS",       # The morphological tags
-    "DEP_TAGS",         # The other dependency tags
-    "DEPTREE_TAG"       # The dependency tree tag
     "POS",              # The UD POS tag
     "PAROLE",           # The full PAROLE tag
     "PAR_SHORT",        # The short PAROLE tag
+    "MORPH_TAGS",       # The morphological tags, space-separated
+    "DEP_TAGS",         # The other dependency tags, space-separated
 
     # Output fields
+    "ID",               # The token ID (line number)
     "MWE",              # THE MWE index
     "USAS",             # The USAS semantic tags
     "USAS_DESCRIPTION", # The USAS semantic tags description
@@ -64,15 +61,6 @@ def doc_from_tuples(nlp: spacy.language.Language, lines: list[tuple]) -> spacy.t
         if 'LEMMA' in data:
             doc[i].lemma_ = data['LEMMA'][i]
 
-        if 'MORPH_TAGS' in data:
-            doc[i]._.morph_tags = data['MORPH_TAGS'][i].split(" ")
-
-        if 'DEP_TAGS' in data:
-            doc[i]._.dep_tags = data['DEP_TAGS'][i].split(" ")
-
-        if 'DEPTREE_TAG' in data:
-            doc[i]._.deptree_tag = data['DEPTREE_TAG'][i]
-
         if 'POS' in data:
             doc[i].pos_ = data['POS'][i]
 
@@ -83,6 +71,12 @@ def doc_from_tuples(nlp: spacy.language.Language, lines: list[tuple]) -> spacy.t
             doc[i]._.par_short = data['PAR_SHORT'][i]
         elif 'PAROLE' in data:
             doc[i]._.par_short = shorten_par_tag(doc[i]._.par_long)
+
+        if 'MORPH_TAGS' in data:
+            doc[i]._.morph_tags = data['MORPH_TAGS'][i].split(" ")
+
+        if 'DEP_TAGS' in data:
+            doc[i]._.dep_tags = data['DEP_TAGS'][i].split(" ")
 
     return doc
 
@@ -109,11 +103,11 @@ def output_tsv(doc: spacy.tokens.doc.Doc, fields: tuple[str]):
             'ID': str(line_number),
             'TOKEN': token_text,
             'LEMMA': token.lemma_,
-            'MORPH_TAGS': token._.morph_tags_str(),
-            'DEP_TAGS': token._.dep_tags_str(),
             'POS': token.pos_,
             'PAROLE': token._.par_long,
             'PAR_SHORT': token._.par_short,
+            'MORPH_TAGS': token._.morph_tags_str(),
+            'DEP_TAGS': token._.dep_tags_str(),
             'MWE': token._.musas_mwe_indexes_str(),
             'USAS': token._.musas_tags_str(),
             'USAS_DESC': token._.musas_desc_str(),
