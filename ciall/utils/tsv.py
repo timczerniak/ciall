@@ -89,10 +89,10 @@ def doc_from_tuples(nlp: spacy.language.Language, lines: list[tuple], fields: li
     return doc
 
 
-def doc_from_tsv(nlp: spacy.language.Language, tsv: str) -> spacy.tokens.doc.Doc:
+def doc_from_tsv(nlp: spacy.language.Language, tsv: str, fields: list[str] = []) -> spacy.tokens.doc.Doc:
     tsv_reader = csv.reader(tsv.splitlines(), delimiter="\t")
     tuples = [row for row in tsv_reader]
-    return doc_from_tuples(nlp, tuples)
+    return doc_from_tuples(nlp, tuples, fields)
 
 
 def output_tsv(doc: spacy.tokens.doc.Doc, fields: tuple[str]):

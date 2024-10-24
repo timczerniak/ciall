@@ -86,6 +86,24 @@ class TestIO(unittest.TestCase):
         self.assertEqual(doc[0]._.par_long, "Vmxx")
         self.assertEqual(doc[0]._.par_short, "Vm")
 
+    def test_doc_from_tsv_specify_fields(self):
+        tsv = "Níl\tbí\tVmxx\n" \
+              "aon\taon\tDqxx\n" \
+              "scrúduithe\tscrúdú\tNcxx\n" \
+              "móra\tmór\tAqxx\n" \
+              "agam\tag\tSpxx\n" \
+              ".\t.\tFxx\n"
+
+        nlp = spacy.blank("ga")
+        doc = doc_from_tsv(nlp, tsv, ["TOKEN", "LEMMA", "PAROLE"])
+
+        self.assertIsInstance(doc, spacy.tokens.doc.Doc)
+
+        self.assertEqual(doc[0].text, "Níl")
+        self.assertEqual(doc[0].lemma_, "bí")
+        self.assertEqual(doc[0]._.par_long, "Vmxx")
+        self.assertEqual(doc[0]._.par_short, "Vm")
+
     def test_output_tsv(self):
         intsv = "TOKEN\tLEMMA\tPAROLE\n" \
                 "Níl\tbí\tVmxx\n" \
