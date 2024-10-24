@@ -109,14 +109,20 @@ class MUSASTagger:
 
     def __init__(self, nlp: Language, sw_lexicon = None, mw_lexicon = None):
         if sw_lexicon is None:
-            raise TypeError("sw_lexicon must be either a full file path or the lexicon contents")
+            raise TypeError("sw_lexicon must be a file path")
+        elif os.path.isfile(sw_lexicon):
+            self.sw_lexicon = sw_lexicon
+        else:
+            raise FileExistsError("Cannot find sw_lexicon file: %s" % sw_lexicon)
+
         if mw_lexicon is None:
             raise TypeError("mw_lexicon must be either a full file path or the lexicon contents")
-        if mw_lexicon is None:
-            raise TypeError("wc_lexicon must be either a full file path or the lexicon contents")
-        self.sw_lexicon = sw_lexicon
-        self.mw_lexicon = mw_lexicon
-        self.wc_lexicon = ""
+        elif os.path.isfile(mw_lexicon):
+            self.mw_lexicon = mw_lexicon
+        else:
+            raise FileExistsError("Cannot find mw_lexicon file: %s" % mw_lexicon)
+
+        # self.wc_lexicon = ""
 
     def __call__(self, doc: Doc):
         """
@@ -159,7 +165,6 @@ class MUSASTagger:
         for (token, result) in zip(doc, tagger_results):
             if token.text.strip() == "":  # do nothing for blank tokens, newlines etc
                 continue
-            #token._.ifst_matches[0].sem_tags = result[0] # store it in the first match too <- this is crazy
             token._.musas_tags = result[0]
             token._.musas_mwe_indexes = result[1]
             #print("%s\t%s\t%s\t%s\t%s" % (token.text, token.lemma_, token._.par_long, token._.par_short, token._.musas_tags))
