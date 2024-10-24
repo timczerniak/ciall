@@ -27,6 +27,26 @@ class TestIO(unittest.TestCase):
         self.assertEqual(doc[0]._.par_long, "Vmxx")
         self.assertEqual(doc[0]._.par_short, "Vm")
 
+    def test_doc_from_tuples_specify_fields(self):
+        tuples = [
+            ("Níl",        "bí",     "Vmxx"  ),
+            ("aon",        "aon",    "Dqxx"  ),
+            ("scrúduithe", "scrúdú", "Ncxx"  ),
+            ("móra",       "mór",    "Aqxx"  ),
+            ("agam",       "ag",     "Spxx"  ),
+            (".",          ".",      "Fxx"   ),
+        ]
+
+        nlp = spacy.blank("ga")
+        doc = doc_from_tuples(nlp, tuples, ["TOKEN", "LEMMA", "PAROLE"])
+
+        self.assertIsInstance(doc, spacy.tokens.doc.Doc)
+
+        self.assertEqual(doc[0].text, "Níl")
+        self.assertEqual(doc[0].lemma_, "bí")
+        self.assertEqual(doc[0]._.par_long, "Vmxx")
+        self.assertEqual(doc[0]._.par_short, "Vm")
+
     def test_doc_from_tuples_all_fields(self):
         tuples = [
             ("TOKEN", "LEMMA", "POS",  "PAROLE", "PAR_SHORT", "MORPH_TAGS",          "DEP_TAGS"        ),

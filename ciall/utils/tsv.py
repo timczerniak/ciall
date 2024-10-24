@@ -24,7 +24,7 @@ VALID_FIELDS = [
 ]
 
 
-def doc_from_tuples(nlp: spacy.language.Language, lines: list[tuple]) -> spacy.tokens.doc.Doc:
+def doc_from_tuples(nlp: spacy.language.Language, lines: list[tuple], fields: list[str] = []) -> spacy.tokens.doc.Doc:
     """
     Build a SpaCy Doc object from a list of tuples.
 
@@ -32,22 +32,30 @@ def doc_from_tuples(nlp: spacy.language.Language, lines: list[tuple]) -> spacy.t
     and subsequent tuples are treated as the values for each token in the document.
     """
 
-    # The first row is expected to be the header row, containing all the field names
-    fields = lines[0]
+    # If fields is passed in and is not empty, we assume that there is no header row
+    # If fields is empty, we assume the first line is the header row containing the field names
+    if len(fields) == 0:
+        fields = lines[0]
+        start_index = 1
+    else:
+        start_index = 0
+
+    # Validate the field names
     for field in fields:
         if field not in VALID_FIELDS:
             raise TypeError("Field '%s' is not a valid field!" % field)
 
+    # One of the fields must be TOKEN
     if 'TOKEN' not in fields:
         raise TypeError("Must have at least a 'TOKEN' field specified!")
 
-    # initialise data
+    # initialise data for processing
     data = {'space': []}
     for f in VALID_FIELDS:
         if f in fields:
             data[f] = []
 
-    for row in lines[1:]:
+    for row in lines[start_index:]:
         if len(row) != len(fields):
             raise TypeError("Row doesn't match header length: %s" % (row,))
         for f, v in zip(fields, row):
@@ -85,6 +93,7 @@ def doc_from_tsv(nlp: spacy.language.Language, tsv: str) -> spacy.tokens.doc.Doc
     tsv_reader = csv.reader(tsv.splitlines(), delimiter="\t")
     tuples = [row for row in tsv_reader]
     return doc_from_tuples(nlp, tuples)
+
 
 def output_tsv(doc: spacy.tokens.doc.Doc, fields: tuple[str]):
     for f in fields:
