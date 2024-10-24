@@ -1,7 +1,7 @@
 import unittest
 import spacy
 
-from ciall.io import doc_from_tuples, doc_from_tsv, output_tsv
+from ciall.utils.tsv import doc_from_tuples, doc_from_tsv, output_tsv
 
 
 class TestIO(unittest.TestCase):
