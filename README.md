@@ -12,7 +12,7 @@ The pipeline requires:
 * [`python3`](https://www.python.org)
 * [`spacy`](https://spacy.io)
 * [`pymusas`](https://ucrel.github.io/pymusas/)
-* [`PyYAML](https://pyyaml.org)
+* [`PyYAML`](https://pyyaml.org)
 
 For Debian/Ubuntu, you can install requirements like so (note you may need to run these using `sudo`):
 
