@@ -46,6 +46,7 @@ $ cat example/example_text.tsv | python3 -m ciall.cmd --conf=example/example_con
 ## The Configuration File
 
 The example configuration file in `example/example_conf.yaml` should serve as a good starting point.
+This uses [YAML format](https://yaml.org).
 
 The pipeline has several components, which need to be enabled and listed in a particular order.
 These should not need to be changed from the example:
