@@ -10,3 +10,6 @@ dockertestbase:
 
 dockertest: dockertestbase
 	docker run --rm -i ciall_testbase make test
+
+dockershell: dockertestbase
+	docker run --rm -it ciall_testbase bash
