@@ -36,9 +36,13 @@ def doc_from_tuples(nlp: spacy.language.Language, lines: list[tuple], fields: li
     # If fields is empty, we assume the first line is the header row containing the field names
     if len(fields) == 0:
         fields = lines[0]
-        start_index = 1
+        start_index = 1  # skip the first line
     else:
-        start_index = 0
+        # Check if it has been specified in both argument and lines
+        if tuple(lines[0]) == tuple(fields):
+            start_index = 1  # skip the first line
+        else:
+            start_index = 0
 
     # Validate the field names
     for field in fields:
@@ -119,7 +123,7 @@ def output_tsv(doc: spacy.tokens.doc.Doc, fields: list[str]):
             'DEP_TAGS': token._.dep_tags_str(),
             'MWE': token._.musas_mwe_indexes_str(),
             'USAS': token._.musas_tags_str(),
-            'USAS_DESC': token._.musas_desc_str(),
+            'USAS_DESCRIPTION': token._.musas_desc_str(),
             'DEPTREE_TAG': token._.deptree_tag,
         }
         outstr.write("\t".join([t[f] for f in fields]) + "\n")

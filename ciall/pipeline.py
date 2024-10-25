@@ -3,6 +3,7 @@ import csv
 import spacy
 
 from ciall.utils import pos2par
+import ciall.components.token_attributes
 import ciall.components.musas_tagger
 import ciall.components.doc_tags
 import ciall.components.year_detector
