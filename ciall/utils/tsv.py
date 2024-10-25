@@ -60,6 +60,8 @@ def doc_from_tuples(nlp: spacy.language.Language, lines: list[tuple], fields: li
             data[f] = []
 
     for row in lines[start_index:]:
+        if len(row) == 0:
+            continue  # skip blank rows
         if len(row) != len(fields):
             raise TypeError("Row doesn't match header length: %s" % (row,))
         for f, v in zip(fields, row):
