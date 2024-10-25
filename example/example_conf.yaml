@@ -1,0 +1,21 @@
+%YAML 1.2
+---
+components:
+  - ciall_musas_tagger
+  - ciall_doc_tags
+  - ciall_year_detector
+  - ciall_prop_nouns
+ciall_musas_tagger:
+  sw_lexicon: example/example_sw_lexicon.tsv
+  mw_lexicon: example/example_mw_lexicon.tsv
+input:
+  format: tsv
+  fields: TOKEN|LEMMA|PAROLE  # |-separated list of fields
+  # To use a cg3 input, swap in the line below instead of the two lines above
+  # format: cg3
+output:
+  format: tsv
+  fields: ID|TOKEN|LEMMA|POS|PAROLE|MWE|USAS|USAS_DESCRIPTION  # Convention for golden standard corpus
+  # To output all possible or all fields, swap in the line below
+  # tsvformat: ID|TOKEN|LEMMA|MORPH_TAGS|DEP_TAGS|DEPTREE_TAG|POS|PAROLE|PAR_SHORT|MWE|USAS|USAS_DESCRIPTION
+...
