@@ -11,12 +11,12 @@ from ciall.utils.lemmafreq import lemmafreq
 class CG3Match:
     # Lemma
     lemma: str
-    # Morphological feature tags (POS)
+    # Morphological feature tags
     morph_tags: list[str] = field(default_factory=list)
     # PAROLE tag
     par_tag_long: str = None
     par_tag_short: str = None
-    # Universal dependency POS tag
+    # Universal dependency UPOS tag
     udep_tag: str = None
     # Dependency tags
     dep_tags: list[str] = field(default_factory=list)
@@ -96,7 +96,7 @@ class CG3Document(object):
                     else:
                         morph_tags.append(tag)
 
-                # convert tags from a list of POS tags into a single PAROLE tag, using pos2par()
+                # convert tags from a list of Morphological tags into a single PAROLE tag, using pos2par()
                 l_par_tag, s_par_tag, udep_tag = pos2par(morph_tags)
 
                 # create the Match object

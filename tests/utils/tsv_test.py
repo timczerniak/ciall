@@ -49,7 +49,7 @@ class TSVTest(unittest.TestCase):
 
     def test_doc_from_tuples_all_fields(self):
         tuples = [
-            ("TOKEN", "LEMMA", "POS",  "PAROLE", "PAR_SHORT", "MORPH_TAGS",          "DEP_TAGS"        ),
+            ("TOKEN", "LEMMA", "UPOS", "PAROLE", "PAR_SHORT", "MORPH_TAGS",          "DEP_TAGS"        ),
             ("Níl",   "bí",    "VERB", "Vmxx",   "Vm",        "Verb VI PresInd Neg", "^Níl^ @FMV #1->0"),
             ("aon",   "aon",   "DET",  "Dqxx",   "Dq",        "Det Qty Def",         "^aon^ @>N #2->1" ),
         ]

@@ -10,7 +10,7 @@ VALID_FIELDS = [
     # Input fields
     "TOKEN",            # The raw token text (word)
     "LEMMA",            # The lemma
-    "POS",              # The UD POS tag
+    "UPOS",              # The UD POS tag
     "PAROLE",           # The full PAROLE tag
     "PAR_SHORT",        # The short PAROLE tag
     "MORPH_TAGS",       # The morphological tags, space-separated
@@ -75,8 +75,8 @@ def doc_from_tuples(nlp: spacy.language.Language, lines: list[tuple], fields: li
         if 'LEMMA' in data:
             doc[i].lemma_ = data['LEMMA'][i]
 
-        if 'POS' in data:
-            doc[i].pos_ = data['POS'][i]
+        if 'UPOS' in data:
+            doc[i].pos_ = data['UPOS'][i]
 
         if 'PAROLE' in data:
             doc[i]._.par_long = data['PAROLE'][i]
@@ -118,7 +118,7 @@ def output_tsv(doc: spacy.tokens.doc.Doc, fields: list[str]):
             'ID': str(line_number),
             'TOKEN': token_text,
             'LEMMA': token.lemma_,
-            'POS': token.pos_,
+            'UPOS': token.pos_,
             'PAROLE': token._.par_long,
             'PAR_SHORT': token._.par_short,
             'MORPH_TAGS': token._.morph_tags_str(),

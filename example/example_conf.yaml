@@ -15,7 +15,7 @@ input:
   # format: cg3
 output:
   format: tsv
-  fields: ID|TOKEN|LEMMA|POS|PAROLE|MWE|USAS|USAS_DESCRIPTION  # Convention for golden standard corpus
+  fields: ID|TOKEN|LEMMA|UPOS|PAROLE|MWE|USAS|USAS_DESCRIPTION  # Convention for golden standard corpus
   # To output all possible or all fields, swap in the line below
-  # tsvformat: ID|TOKEN|LEMMA|MORPH_TAGS|DEP_TAGS|DEPTREE_TAG|POS|PAROLE|PAR_SHORT|MWE|USAS|USAS_DESCRIPTION
+  # tsvformat: ID|TOKEN|LEMMA|MORPH_TAGS|DEP_TAGS|DEPTREE_TAG|UPOS|PAROLE|PAR_SHORT|MWE|USAS|USAS_DESCRIPTION
 ...

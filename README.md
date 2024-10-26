@@ -100,7 +100,7 @@ Output format can only be TSV at present. The `fields` value must be specified t
 ```yaml
 output:
   format: tsv
-  fields: ID|TOKEN|LEMMA|POS|PAROLE|MWE|USAS|USAS_DESCRIPTION
+  fields: ID|TOKEN|LEMMA|UPOS|PAROLE|MWE|USAS|USAS_DESCRIPTION
 ```
 
 ## Input/Output Pipes & Files
