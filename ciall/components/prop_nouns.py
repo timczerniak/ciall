@@ -5,6 +5,7 @@ from spacy.language import Language
 PAR_TAG_PROP_NOUN = "Np"
 MORPH_TAG_PERS = "Pers"
 MORPH_TAG_PNAME = "PName"
+MORPH_TAG_PERSNAME = "PersName"
 MORPH_TAG_FAM = "Fam"
 MORPH_TAG_PLACE = "Place"
 PERS_NAME_USAS_TAG = "Z1"
@@ -26,7 +27,10 @@ def prop_nouns_function(doc):
             if MORPH_TAG_PERS in token._.morph_tags:  # Personal name - Z1
                 # This is an old way of tagging Personal names
                 tag_to_assign = PERS_NAME_USAS_TAG
-            if MORPH_TAG_PNAME in token._.morph_tags:  # Personal name - Z1
+            elif MORPH_TAG_PNAME in token._.morph_tags:  # Personal name - Z1
+                # This is the new way of tagging Personal names
+                tag_to_assign = PERS_NAME_USAS_TAG
+            elif MORPH_TAG_PERSNAME in token._.morph_tags:  # Personal name - Z1
                 # This is the new way of tagging Personal names
                 tag_to_assign = PERS_NAME_USAS_TAG
             elif MORPH_TAG_FAM in token._.morph_tags:  # Family name - Z1
