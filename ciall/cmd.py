@@ -82,14 +82,17 @@ def parse_args_conf():
                         help="The configuration file to use.")
     parser.add_argument('-i', '--infile',
                         default=None,
-                        help="The input file to process. If unspecified, STDIN is used.")
+                        help="The input file to process. " \
+                             "If unspecified, STDIN is used.")
     parser.add_argument('-o', '--outfile',
                         default=None,
-                        help="The destination file for output. If unspecified, STDOUT is used.")
+                        help="The destination file for output. " \
+                             "If unspecified, STDOUT is used.")
     parser.add_argument('-C', '--coverage',
                         action='store_true',
                         default=False,
-                        help="Print semantic tagging coverage information.")
+                        help="Print semantic tagging coverage information. " \
+                             "If specified, the output itself is not printed.")
     # TODO: Add this when we find a good way to do logging
     # parser.add_argument('-v', '--verbose', default=False, action='store_true',
     #                     help="When specified, log messages will be sent to STDOUT.")
