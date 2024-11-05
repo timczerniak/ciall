@@ -34,6 +34,10 @@ def main(args, conf):
     elif isinstance(conf.get('input'), dict) and (conf['input'].get('format') == "cg3"):
         doc = cg3.doc_from_cg3(nlp, instr)
 
+    if args.accuracy:
+        # TODO!!!
+        pass
+    else:
         # Run the pipeline
         doc = nlp(doc)
 
