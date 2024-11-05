@@ -77,9 +77,9 @@ class TestMUSASTagger(unittest.TestCase):
             ("Rith",     "rith",     "Vm"),
             ("mé",       "mé",       "Pp"),
             ("ó",        "ó",        "Sp"),
-            ("Bhaile",   "Baile",    "Np"),
-            ("Átha",     "Átha",     "Np"),
-            ("Cliath",   "Cliath",   "Np"),
+            ("Bhaile",   "Baile",    "Np"),  # Baile Átha Cliath
+            ("Átha",     "Átha",     "Np"),  # This won't match on tokens because there's a séimhiú 'Bhaile'.
+            ("Cliath",   "Cliath",   "Np"),  # This will match on the lemmas instead.
             ("go",       "go",       "Sp"),
             ("Corcaigh", "Corcaigh", "Np"),
             (".",        ".",        "F" ),
@@ -134,6 +134,40 @@ class TestMUSASTagger(unittest.TestCase):
         ]
         expected_sem_tags = [
             "M1", "Z8", "Z5", "Z5", "Z0", "T1.1.1"
+        ]
+
+        doc = process_test_text(test_text)
+
+        for token, sem_tags in zip (doc, expected_sem_tags):
+            if isinstance(sem_tags, str):
+                sem_tags = [sem_tags]
+            self.assertEqual(sem_tags, token._.musas_tags, "For '%s' expected %s, got %s" % \
+                             (token.text, sem_tags, token._.musas_tags))
+
+    # NOTE:
+    # Disabled because it will fail with standard PyMUSAS ranking behaviour.
+    # If we find a way to change that behaviour, we can enable this test.
+    @unittest.skip("Fails with standard PyMUSAS ranking behaviour")
+    def test_token_lemma_matching(self):
+        """
+        This tests the ranking of token-based and lemma-based matches in PyMUSAS
+
+        The following two entries are in test_sw_lexicon.tsv:
+           lár    Nc   M6 N2     <-- This one is lár meaning 'centre'
+           láir   Nc   L2fn L2   <-- The second one is lár meaning 'mare'
+
+        By default PyMUSAS prioritises token-based matches over lemma-based matches,
+        meaning that 'láir' will always match as 'mare', even if its lemma is 'lár'.
+        This test will therefore fail with default PyMUSAS behaviour.
+        """
+
+        test_text = [
+            ("láir", "lár",  "Nc"),  # centre
+            ("láir", "láir", "Nc"),  # mare
+        ]
+        expected_sem_tags = [
+            ["M6", "N2"],    # centre
+            ["L2fn", "L2"],  # mare
         ]
 
         doc = process_test_text(test_text)
