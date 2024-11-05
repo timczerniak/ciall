@@ -128,9 +128,11 @@ class MUSASTagger:
         """
         This PyMUSAS component is re-implemented here because:
         - Spacy doesn't allow assigning the 'pos_' attribute to be a PAROLE tag (it must be a universal deps tag).
-        - pymusas.spacy_api.taggers.rule_based.RuleBasedTagger) uses the 'pos_' tag by default, and it's not simple
-        to override it to use the 'par_tag_short' attribute instead.
-        - We want to do a second pass to tag all of the less likely senses.
+        - pymusas.spacy_api.taggers.rule_based.RuleBasedTagger uses the 'pos_' tag by default, and it's not simple
+          to override it to use the 'par_tag_short' attribute instead.
+        - PyMUSAS ranks token-based matches higher than lemma-based ones. In Irish, single-word matches should
+          prioritise lemma-based matches because there are mutations that can lead to mis-matches.
+          e.g. 'láir' is the genetive of 'lár' (NOUN, 'centre'), but there is a clash with 'láir' (NOUN, 'mare')
 
         A note about the Wildcard lemma lexicon:
         The wildcard lexicon file is formatted like the single-word
@@ -156,7 +158,7 @@ class MUSASTagger:
         tagger = RuleBasedTagger(rules, ranker)
 
         # Run the tagger
-        tokens = ["" for token in doc]  # remove the token because the pymusas rankers put tokens above lemmas
+        tokens = [token.text for token in doc]
         lemmas = [token.lemma_ for token in doc]
         par_tags = [token._.par_short for token in doc]
         tagger_results = tagger(tokens, lemmas, par_tags)

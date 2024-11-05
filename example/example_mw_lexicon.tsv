@@ -1,5 +1,6 @@
 mwe_template	semantic_tags
 Baile_Np Átha_Np Cliath_Np	Z2
+Baile_* Átha_* Cliath_*	Z2
 ainm_Nc cleite_Nc	Q2.2
 tar_* éis_*	Z5
 go_* dtí_*	Z5
