@@ -20,7 +20,7 @@ def main(args, conf):
         return 1
 
     # Make the pipeline
-    nlp = pipeline.make_pipeline(conf)
+    nlp = pipeline.make_pipeline(conf, accuracy=args.accuracy)
 
     # Make the Doc object from the input
     if isinstance(conf.get('input'), dict) and (conf['input'].get('format') == "tsv"):
@@ -34,26 +34,26 @@ def main(args, conf):
     elif isinstance(conf.get('input'), dict) and (conf['input'].get('format') == "cg3"):
         doc = cg3.doc_from_cg3(nlp, instr)
 
-    # Run the pipeline
-    doc = nlp(doc)
+        # Run the pipeline
+        doc = nlp(doc)
 
-    # Make the output stream
-    if args.outfile is None:
-        outstr = sys.stdout
-    else:
-        outstr = open(args.outfile, "w")
+        # Make the output stream
+        if args.outfile is None:
+            outstr = sys.stdout
+        else:
+            outstr = open(args.outfile, "w")
 
-    # Write the output
-    if isinstance(conf.get('output'), dict) and conf['output'].get('fields') is not None:
-        outfields = conf['output']['fields'].split("|")
-    else:
-        print("Must specify configuration value output.fields as a |-separated list of fields to output")
-        return 1
-    outstr.write(tsv.output_tsv(doc, outfields))
+        # Write the output
+        if isinstance(conf.get('output'), dict) and conf['output'].get('fields') is not None:
+            outfields = conf['output']['fields'].split("|")
+        else:
+            print("Must specify configuration value output.fields as a |-separated list of fields to output")
+            return 1
+        outstr.write(tsv.output_tsv(doc, outfields))
 
-    # Close the output
-    if args.outfile is not None:
-        outstr.close()
+        # Close the output
+        if args.outfile is not None:
+            outstr.close()
 
     # Print coverage information
     if args.coverage:
@@ -92,6 +92,12 @@ def parse_args_conf():
                         action='store_true',
                         default=False,
                         help="Print semantic tagging coverage information. " \
+                             "If specified, the output itself is not printed.")
+    parser.add_argument('-A', '--accuracy',
+                        action='store_true',
+                        default=False,
+                        help="Run accuracy tests using the input as a test file. " \
+                             "This only works with TSV input. " \
                              "If specified, the output itself is not printed.")
     # TODO: Add this when we find a good way to do logging
     # parser.add_argument('-v', '--verbose', default=False, action='store_true',

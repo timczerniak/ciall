@@ -8,6 +8,7 @@ import ciall.components.musas_tagger
 import ciall.components.doc_tags
 import ciall.components.year_detector
 import ciall.components.prop_nouns
+import ciall.components.accuracy
 #import ga_nlp.sem_dis.frames
 
 
@@ -28,7 +29,7 @@ COMPONENTS = (
 )
 
 
-def make_pipeline(conf: dict) -> spacy.language.Language:
+def make_pipeline(conf: dict, accuracy: bool = False) -> spacy.language.Language:
     """
     Only used when feeding raw text into the pipeline
     """
@@ -53,5 +54,9 @@ def make_pipeline(conf: dict) -> spacy.language.Language:
             nlp.add_pipe(cmp, config=conf[cmp])
         else:
             nlp.add_pipe(cmp)
+
+    # If measuring accuracy, add the component for that
+    if accuracy:
+        nlp.add_pipe("ciall_accuracy")
 
     return nlp

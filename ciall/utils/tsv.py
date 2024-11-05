@@ -24,7 +24,10 @@ VALID_FIELDS = [
 ]
 
 
-def doc_from_tuples(nlp: spacy.language.Language, lines: list[tuple], fields: list[str] = []) -> spacy.tokens.doc.Doc:
+def doc_from_tuples(nlp: spacy.language.Language,
+                    lines: list[tuple],
+                    fields: list[str] = [],
+                    accuracy: bool = False) -> spacy.tokens.doc.Doc:
     """
     Build a SpaCy Doc object from a list of tuples.
 
@@ -92,13 +95,21 @@ def doc_from_tuples(nlp: spacy.language.Language, lines: list[tuple], fields: li
         if 'DEP_TAGS' in data:
             doc[i]._.dep_tags = data['DEP_TAGS'][i].split(" ")
 
+        # Used for accuracy reporting
+        if accuracy:
+            if 'USAS' in data:
+                doc[i]._.expected_musas_tags = data['USAS'][i].split(" ")
+
     return doc
 
 
-def doc_from_tsv(nlp: spacy.language.Language, tsv: str, fields: list[str] = []) -> spacy.tokens.doc.Doc:
+def doc_from_tsv(nlp: spacy.language.Language,
+                 tsv: str,
+                 fields: list[str] = [],
+                 accuracy: bool = False) -> spacy.tokens.doc.Doc:
     tsv_reader = csv.reader(tsv.splitlines(), delimiter="\t")
-    tuples = [row for row in tsv_reader]
-    return doc_from_tuples(nlp, tuples, fields)
+    lines = [row for row in tsv_reader]
+    return doc_from_tuples(nlp, lines=lines, fields=fields, accuracy=accuracy)
 
 
 def output_tsv(doc: spacy.tokens.doc.Doc, fields: list[str]):
