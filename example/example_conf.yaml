@@ -11,7 +11,7 @@ ciall_musas_tagger:
 input:
   format: tsv
   # |-separated list of fields, this must match the header line in the tsv file if there is one
-  fields: TOKEN|LEMMA|PAROLE 
+  #fields: TOKEN|LEMMA|PAROLE 
   # To use a cg3 input, swap in the line below instead of the two lines above
   # format: cg3
 output:
