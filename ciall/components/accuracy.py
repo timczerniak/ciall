@@ -74,9 +74,9 @@ class AccuracyReport(object):
             combined_report.num_z99 += report.num_z99
             combined_report.num_fully_correct += report.num_fully_correct
             combined_report.num_cont_fully_correct += report.num_cont_fully_correct
-            combined_report.all_match_values.append(report.all_match_values)
-            combined_report.cont_match_values.append(report.cont_match_values)
-            combined_report.calculate()
+            combined_report.all_match_values.extend(report.all_match_values)
+            combined_report.cont_match_values.extend(report.cont_match_values)
+        combined_report.calculate_totals()
         return combined_report
 
 

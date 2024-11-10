@@ -1,63 +1,87 @@
 import sys
+import os
 import argparse
 import yaml
 
 from ciall import pipeline
 from ciall.utils import tsv
 from ciall.utils import cg3
+from ciall.components.accuracy import AccuracyReport
 
 
 def main(args, conf):
     # Gather the input
-    instr = ""
+    instrs = []
     if args.infile is None:
-        instr = "\n".join([line for line in sys.stdin])
+        instr.append("\n".join([line for line in sys.stdin]))
     else:
-        with open(args.infile, "r") as fin:
-            instr = fin.read()
-    if instr == "":
+        if os.path.isdir(args.infile):
+            files = []
+            for file in os.listdir(args.infile):
+                dirpath = os.path.abspath(args.infile)
+                files.append(os.path.join(dirpath,file))
+        elif os.path.isfile(args.infile):
+            files = [args.infile]
+        else:
+            print ("Input file doesn't exist: %s" % args.infile)
+            return 1
+        for file in files:
+            with open(file, "r") as fin:
+                instrs.append(fin.read())
+    if (len(instrs) == 0) or (instrs[0] == ""):
         print("No input data!")
         return 1
+
+    # For saving accuracy reports
+    accuracy_reports = []
 
     # Make the pipeline
     nlp = pipeline.make_pipeline(conf, accuracy=args.accuracy)
 
-    # Make the Doc object from the input
-    if isinstance(conf.get('input'), dict) and (conf['input'].get('format') == "tsv"):
-        # if input format is tsv parse it into a doc first
-        infields = conf['input'].get('fields', None)
-        if infields:
-            fields = infields.split("|")
-        else:
-            fields = []
-        doc = tsv.doc_from_tsv(nlp, instr, fields=fields, accuracy=args.accuracy)
-    elif isinstance(conf.get('input'), dict) and (conf['input'].get('format') == "cg3"):
-        doc = cg3.doc_from_cg3(nlp, instr)
+    # Process each input string
+    for instr in instrs:
+        # Make the Doc object from the input
+        if isinstance(conf.get('input'), dict) and (conf['input'].get('format') == "tsv"):
+            # if input format is tsv parse it into a doc first
+            infields = conf['input'].get('fields', None)
+            if infields:
+                fields = infields.split("|")
+            else:
+                fields = []
+            doc = tsv.doc_from_tsv(nlp, instr, fields=fields, accuracy=args.accuracy)
+        elif isinstance(conf.get('input'), dict) and (conf['input'].get('format') == "cg3"):
+            doc = cg3.doc_from_cg3(nlp, instr)
 
-    # Run the pipeline
-    doc = nlp(doc)
+        # Run the pipeline
+        doc = nlp(doc)
+
+        # Save the accuracy report
+        if args.accuracy:
+            accuracy_reports.append(doc._.accuracy_report)
+        else: # Print the output
+            # Make the output stream
+            if args.outfile is None:
+                outstr = sys.stdout
+            else:
+                # In the case of multiple input files, append mode ('a') means the outputs will all be in the same file
+                outstr = open(args.outfile, "a")
+
+            # Write the output
+            if isinstance(conf.get('output'), dict) and conf['output'].get('fields') is not None:
+                outfields = conf['output']['fields'].split("|")
+            else:
+                print("Must specify configuration value output.fields as a |-separated list of fields to output")
+                return 1
+            outstr.write(tsv.output_tsv(doc, outfields))
+
+            # Close the output
+            if args.outfile is not None:
+                outstr.close()
 
     if args.accuracy:
-        # Print the accuracy report
-        print(doc._.accuracy_report.report_str)
-    else: # Print the output
-        # Make the output stream
-        if args.outfile is None:
-            outstr = sys.stdout
-        else:
-            outstr = open(args.outfile, "w")
-
-        # Write the output
-        if isinstance(conf.get('output'), dict) and conf['output'].get('fields') is not None:
-            outfields = conf['output']['fields'].split("|")
-        else:
-            print("Must specify configuration value output.fields as a |-separated list of fields to output")
-            return 1
-        outstr.write(tsv.output_tsv(doc, outfields))
-
-        # Close the output
-        if args.outfile is not None:
-            outstr.close()
+        # Print the combined accuracy report
+        combined_accuracy_report = AccuracyReport.combine_reports(accuracy_reports)
+        print(combined_accuracy_report.report_str)
 
     return 0
 
