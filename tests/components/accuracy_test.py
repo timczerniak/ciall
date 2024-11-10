@@ -40,3 +40,7 @@ class TestAccuracy(unittest.TestCase):
         self.assertLess(report.pc_all_accuracy, 60.0)
         self.assertGreater(report.pc_cont_accuracy, 40.0)
         self.assertLess(report.pc_cont_accuracy, 60.0)
+
+    def test_accuracy_component(self):
+        # TODO!
+        pass
