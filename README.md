@@ -79,7 +79,9 @@ input:
 ```
 
 Note that the `fields` value is a list of fields separated by 'bar' (`|`) characters.
-The `fields` value can be ommitted from the config if the first line of the TSV file contains the field names like so:
+The `fields` value can be ommitted from the config if the first line of the TSV file contains the field names as below.
+Note that if the `fields` value is set in the config and if there is also a heading line in the TSV files as below,
+they must match.
 
 ```tsv
 TOKEN   LEMMA   PAROLE

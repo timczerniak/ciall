@@ -62,6 +62,7 @@ def main(args, conf):
     return 0
 
 
+# This is separate to make the main() function more testable
 def parse_args_conf():
     parser = argparse.ArgumentParser(prog='ciall',
                                      description='The Irish semantic tagging pipeline')
@@ -71,7 +72,8 @@ def parse_args_conf():
     parser.add_argument('-i', '--infile',
                         default=None,
                         help="The input file to process. " \
-                             "If unspecified, STDIN is used.")
+                             "If unspecified, STDIN is used. " \
+                             "This can also be a folder containing multiple .tsv files to process.")
     parser.add_argument('-o', '--outfile',
                         default=None,
                         help="The destination file for output. " \
