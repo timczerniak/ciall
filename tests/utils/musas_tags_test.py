@@ -56,6 +56,8 @@ class TestMusasTag(unittest.TestCase):
         self.assertEqual(Tag("A4.7n-").compare(Tag("A1.2.3f+")), TagComparison.SAME_FIELD)
         self.assertEqual(Tag("A4").compare(Tag("A1.2.3f+")), TagComparison.SAME_FIELD)
         self.assertEqual(Tag("Q4.5").compare(Tag("A1.2.3f+")), TagComparison.UNEQUAL)
+        self.assertEqual(Tag("Q4.5").compare(Tag("Z99")), TagComparison.UNEQUAL)
+        self.assertEqual(Tag("Z99").compare(Tag("A1.2.3f+")), TagComparison.UNEQUAL)
 
     def test_tag_match(self):
         self.assertEqual(Tag("A1.2.3f+").match(Tag("A1.2.3f+")), 1.0)

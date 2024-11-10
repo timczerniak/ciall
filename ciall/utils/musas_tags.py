@@ -392,6 +392,10 @@ class Tag:
         Compare this tag with another
         Returns: a TagComparison object (enum)
         """
+        # If either of them is Z99 then they are unequal
+        if (self.tag_str == "Z99") or (other.tag_str == "Z99"):
+            return TagComparison.UNEQUAL
+
         # if everything matches, EQUAL
         if self == other:
             return TagComparison.EQUAL
