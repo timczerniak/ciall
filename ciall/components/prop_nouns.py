@@ -39,6 +39,6 @@ def prop_nouns_function(doc):
                 tag_to_assign = PLACE_USAS_TAG
 
             if tag_to_assign != None:
-                token._.pymusas_tags = [tag_to_assign]
+                token._.musas_tags = [tag_to_assign]
 
     return doc

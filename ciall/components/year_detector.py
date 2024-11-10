@@ -23,8 +23,8 @@ def year_detector_function(doc):
                 # token is an integer between 1000 and 2100, it's probably a year
                 # Add the time period USAS tag as the most likely tag
                 #print("year detected %s" % token.text)
-                if token._.pymusas_tags is None:
-                    token._.pymusas_tags = []
-                token._.pymusas_tags = [TIME_PERIOD_USAS_TAG] + token._.pymusas_tags
+                if token._.musas_tags is None:
+                    token._.musas_tags = []
+                token._.musas_tags = [TIME_PERIOD_USAS_TAG] + token._.musas_tags
 
     return doc

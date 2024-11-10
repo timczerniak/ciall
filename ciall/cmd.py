@@ -30,17 +30,17 @@ def main(args, conf):
             fields = infields.split("|")
         else:
             fields = []
-        doc = tsv.doc_from_tsv(nlp, instr, fields=fields)
+        doc = tsv.doc_from_tsv(nlp, instr, fields=fields, accuracy=args.accuracy)
     elif isinstance(conf.get('input'), dict) and (conf['input'].get('format') == "cg3"):
         doc = cg3.doc_from_cg3(nlp, instr)
 
-    if args.accuracy:
-        # TODO!!!
-        pass
-    else:
-        # Run the pipeline
-        doc = nlp(doc)
+    # Run the pipeline
+    doc = nlp(doc)
 
+    if args.accuracy:
+        # Print the accuracy report
+        print(doc._.accuracy_report.report_str)
+    else: # Print the output
         # Make the output stream
         if args.outfile is None:
             outstr = sys.stdout
@@ -59,22 +59,6 @@ def main(args, conf):
         if args.outfile is not None:
             outstr.close()
 
-    # Print coverage information
-    if args.coverage:
-        num_tokens = 0
-        num_z99 = 0
-        for token in doc:
-            if token._.pymusas_tags == None:
-                continue
-            num_tokens += 1
-            if token._.pymusas_tags[0] == "Z99":
-                num_z99 += 1
-        num_matched = num_tokens - num_z99
-        pc_matched = round((num_matched / num_tokens) * 100.0, 3)
-        print(f"Total tokens: {num_tokens}")
-        print(f"Num tokens matched: {num_matched}")
-        print(f"Percentage tokens matched: {pc_matched}%")
-
     return 0
 
 
@@ -92,11 +76,6 @@ def parse_args_conf():
                         default=None,
                         help="The destination file for output. " \
                              "If unspecified, STDOUT is used.")
-    parser.add_argument('-C', '--coverage',
-                        action='store_true',
-                        default=False,
-                        help="Print semantic tagging coverage information. " \
-                             "If specified, the output itself is not printed.")
     parser.add_argument('-A', '--accuracy',
                         action='store_true',
                         default=False,

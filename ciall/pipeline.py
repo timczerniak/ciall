@@ -26,6 +26,7 @@ COMPONENTS = (
     "ciall_year_detector",
     "ciall_prop_nouns",
     #"ciall_frames",  # to be added from ga_sem_tag
+    "ciall_accuracy",
 )
 
 
@@ -47,6 +48,10 @@ def make_pipeline(conf: dict, accuracy: bool = False) -> spacy.language.Language
         raise TypeError("No 'components' key found in config!")
     components = conf['components']
 
+    # If measuring accuracy, add the component for that
+    if accuracy:
+        components.append("ciall_accuracy")
+
     for cmp in components:
         if cmp not in COMPONENTS:
             raise TypeError("%s is not a valid component!" % cmp)
@@ -54,9 +59,5 @@ def make_pipeline(conf: dict, accuracy: bool = False) -> spacy.language.Language
             nlp.add_pipe(cmp, config=conf[cmp])
         else:
             nlp.add_pipe(cmp)
-
-    # If measuring accuracy, add the component for that
-    if accuracy:
-        nlp.add_pipe("ciall_accuracy")
 
     return nlp

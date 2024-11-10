@@ -19,16 +19,16 @@ class AccuracyReport(object):
         self.all_match_values = []       # match values for all tokens
         self.cont_match_values = []      # match values for content words
     
-    def add_token(self, par_short: str, pymusas_tags: list[str], expected_pymusas_tag: str):
+    def add_token(self, par_short: str, musas_tags: list[str], expected_musas_tag: str):
         # Increment number of tokens
         self.num_tokens += 1
 
         # Is it unmatched?
-        if pymusas_tags[0] == "Z99":
+        if musas_tags[0] == "Z99":
             self.num_z99 += 1
 
         # Calculate and save the MUSAS accuracy value
-        mv = MultiSenseTag(" ".join(pymusas_tags)).match(CompoundTag(expected_pymusas_tag))
+        mv = MultiSenseTag(" ".join(musas_tags)).match(CompoundTag(expected_musas_tag))
         self.all_match_values.append(mv)
 
         # Is it fully correct?
@@ -55,15 +55,15 @@ class AccuracyReport(object):
     @property
     def report_str(self):
         # printed results
-        report_str = "### Results\n\n"
-        report_str += "Num tokens: %s\n " % self.num_tokens
+        report_str = "### Accuracy Report\n"
+        report_str += "Num tokens: %s\n" % self.num_tokens
         report_str += "Lexical coverage: %s%%\n" % self.lexical_coverage
-        report_str += "Fully correct MUSAS tags (all tokens): %s%% (%s tokens)" % \
+        report_str += "Fully correct MUSAS tags (all tokens): %s%% (%s token(s))\n" % \
                       (self.pc_all_fully_correct, self.num_fully_correct)
-        report_str += "Fully correct MUSAS tags (content tokens): %s%% (%s tokens)" % \
+        report_str += "Fully correct MUSAS tags (content tokens): %s%% (%s token(s))\n" % \
                       (self.pc_cont_fully_correct, self.num_cont_fully_correct)
-        report_str += "Overall semantic tag accuracy (all tokens): %s%%" % self.pc_all_accuracy
-        report_str += "Overall semantic tag accuracy (content tokens): %s%%" % self.pc_cont_accuracy
+        report_str += "Overall semantic tag accuracy (all tokens): %s%%\n" % self.pc_all_accuracy
+        report_str += "Overall semantic tag accuracy (content tokens): %s%%\n" % self.pc_cont_accuracy
         return report_str
     
     @classmethod
@@ -89,8 +89,8 @@ def accuracy_function(doc):
     # Run through the doc adding all the tokens
     for token in doc:
         report.add_token(par_short=token._.par_short,
-                         pymusas_tags=token._.pymusas_tags,
-                         expected_pymusas_tag=token._.expected_pymusas_tag)
+                         musas_tags=token._.musas_tags,
+                         expected_musas_tag=token._.expected_musas_tag)
 
     # Calculate totals
     report.calculate_totals()

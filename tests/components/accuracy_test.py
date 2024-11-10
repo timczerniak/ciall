@@ -11,7 +11,7 @@ class TestAccuracy(unittest.TestCase):
     def test_accuracy_report(self):
         tokens = [
             # Here are 10 words, which together give a particular set of results
-            # par_short  pymusas_tags  expected_pymusas_tag
+            # par_short  musas_tags  expected_musas_tag
             ("Nc", ["A1"],       "A1"),  # Fully accurate content word: accuracy 1
             ("Nc", ["B2"],       "B2"),  # Fully accurate content word: accuracy 1
             ("Nc", ["A1", "C1"], "A1"),  # Partially accurate content word: 0 < accuracy < 1
@@ -26,10 +26,10 @@ class TestAccuracy(unittest.TestCase):
         ]
 
         report = AccuracyReport()
-        for par_short, pymusas_tags, expected_pymusas_tag in tokens:
+        for par_short, musas_tags, expected_musas_tag in tokens:
             report.add_token(par_short=par_short,
-                             pymusas_tags=pymusas_tags,
-                             expected_pymusas_tag=expected_pymusas_tag)
+                             musas_tags=musas_tags,
+                             expected_musas_tag=expected_musas_tag)
         report.calculate_totals()
 
         print(report.all_match_values)

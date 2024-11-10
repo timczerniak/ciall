@@ -98,7 +98,7 @@ def doc_from_tuples(nlp: spacy.language.Language,
         # Used for accuracy reporting
         if accuracy:
             if 'USAS' in data:
-                doc[i]._.expected_musas_tags = data['USAS'][i].split(" ")
+                doc[i]._.expected_musas_tag = data['USAS'][i]
 
     return doc
 
