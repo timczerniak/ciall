@@ -13,7 +13,7 @@ def main(args, conf):
     # Gather the input
     instrs = []
     if args.infile is None:
-        instr.append("\n".join([line for line in sys.stdin]))
+        instrs.append("\n".join([line for line in sys.stdin]))
     else:
         if os.path.isdir(args.infile):
             files = []
