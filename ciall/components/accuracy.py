@@ -28,7 +28,8 @@ class AccuracyReport(object):
             self.num_z99 += 1
 
         # Calculate and save the MUSAS accuracy value
-        mv = MultiSenseTag(" ".join(musas_tags)).match(CompoundTag(expected_musas_tag))
+        # If the expected tag field contains multiple senses, this only uses the first one
+        mv = MultiSenseTag(" ".join(musas_tags)).match(MultiSenseTag(expected_musas_tag).senses[0])
         self.all_match_values.append(mv)
 
         # Is it fully correct?
