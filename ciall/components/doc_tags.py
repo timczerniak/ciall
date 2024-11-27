@@ -55,6 +55,8 @@ def doc_tags_function(doc):
         if token._.musas_tags and len(token._.musas_tags) > 1:
             curr_tags = token._.musas_tags
             def sortfunc(compound_tag):
+                if compound_tag == '':
+                    return -1000
                 ct = CompoundTag(compound_tag)
                 fs = [t.field for t in ct.tags]
                 fstats = [doc._.musas_field_stats[f] for f in fs if f in doc._.musas_field_stats]

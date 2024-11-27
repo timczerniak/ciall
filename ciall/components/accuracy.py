@@ -89,9 +89,13 @@ def accuracy_function(doc):
 
     # Run through the doc adding all the tokens
     for token in doc:
-        report.add_token(par_short=token._.par_short,
-                         musas_tags=token._.musas_tags,
-                         expected_musas_tag=token._.expected_musas_tag)
+        try:
+            report.add_token(par_short=token._.par_short,
+                            musas_tags=token._.musas_tags,
+                            expected_musas_tag=token._.expected_musas_tag)
+        except Exception:
+            print("problem with token", token.text, token._.par_short, token._.musas_tags)
+            raise
 
     # Calculate totals
     report.calculate_totals()

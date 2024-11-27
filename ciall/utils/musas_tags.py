@@ -438,7 +438,7 @@ class CompoundTag:
 
     def __init__(self, cmp_tag_str: str):
         self.cmp_tag_str = cmp_tag_str.strip()
-        self.tags = [Tag(tag) for tag in self.cmp_tag_str.split("/")]
+        self.tags = [Tag(tag) for tag in self.cmp_tag_str.split("/") if tag != '']
 
     def __str__(self) -> str:
         return self.cmp_tag_str

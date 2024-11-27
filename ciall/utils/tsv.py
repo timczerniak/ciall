@@ -107,7 +107,7 @@ def doc_from_tsv(nlp: spacy.language.Language,
                  tsv: str,
                  fields: list[str] = [],
                  accuracy: bool = False) -> spacy.tokens.doc.Doc:
-    tsv_reader = csv.reader(tsv.splitlines(), delimiter="\t")
+    tsv_reader = csv.reader(tsv.splitlines(), delimiter="\t", quoting=csv.QUOTE_NONE)
     lines = [row for row in tsv_reader]
     return doc_from_tuples(nlp, lines=lines, fields=fields, accuracy=accuracy)
 

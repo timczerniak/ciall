@@ -1,5 +1,6 @@
 import sys
 import os
+import traceback
 import argparse
 import yaml
 
@@ -11,23 +12,33 @@ from ciall.components.accuracy import AccuracyReport
 
 def main(args, conf):
     # Gather the input
+    filenames = []
     instrs = []
     if args.infile is None:
+        filenames.append("stdin")
         instrs.append("\n".join([line for line in sys.stdin]))
     else:
         if os.path.isdir(args.infile):
             files = []
             for file in os.listdir(args.infile):
+                if file.startswith("."):  # Exclude any 'dotfiles' found
+                    continue
                 dirpath = os.path.abspath(args.infile)
-                files.append(os.path.join(dirpath,file))
+                files.append(os.path.join(dirpath, file))
         elif os.path.isfile(args.infile):
             files = [args.infile]
         else:
-            print ("Input file doesn't exist: %s" % args.infile)
+            print("Input file doesn't exist: %s" % args.infile)
             return 1
         for file in files:
             with open(file, "r") as fin:
-                instrs.append(fin.read())
+                try:
+                    filenames.append(file)
+                    instrs.append(fin.read())
+                except Exception:
+                    print("When reading %s got exception:" % file)
+                    traceback.print_exc()
+                    exit(1)
     if (len(instrs) == 0) or (instrs[0] == ""):
         print("No input data!")
         return 1
@@ -39,7 +50,7 @@ def main(args, conf):
     nlp = pipeline.make_pipeline(conf, accuracy=args.accuracy)
 
     # Process each input string
-    for instr in instrs:
+    for filename, instr in zip(filenames, instrs):
         # Make the Doc object from the input
         if isinstance(conf.get('input'), dict) and (conf['input'].get('format') == "tsv"):
             # if input format is tsv parse it into a doc first
@@ -48,12 +59,27 @@ def main(args, conf):
                 fields = infields.split("|")
             else:
                 fields = []
-            doc = tsv.doc_from_tsv(nlp, instr, fields=fields, accuracy=args.accuracy)
+            try:
+                doc = tsv.doc_from_tsv(nlp, instr, fields=fields, accuracy=args.accuracy)
+            except Exception:
+                print("When reading %s got exception:" % filename)
+                traceback.print_exc()
+                exit(1)
         elif isinstance(conf.get('input'), dict) and (conf['input'].get('format') == "cg3"):
-            doc = cg3.doc_from_cg3(nlp, instr)
+            try:
+                doc = cg3.doc_from_cg3(nlp, instr)
+            except Exception:
+                print("When reading %s got exception:" % filename)
+                traceback.print_exc()
+                exit(1)
 
         # Run the pipeline
-        doc = nlp(doc)
+        try:
+            doc = nlp(doc)
+        except Exception:
+            print("When processing %s got exception:" % filename)
+            traceback.print_exc()
+            exit(1)
 
         # Save the accuracy report
         if args.accuracy:
