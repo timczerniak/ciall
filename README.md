@@ -105,6 +105,7 @@ output:
   fields: ID|TOKEN|LEMMA|UPOS|PAROLE|MWE|USAS|USAS_DESCRIPTION
 ```
 
+
 ## Input/Output Pipes & Files
 
 Input can be piped in or read from a file, and output can be piped out or saved to a file:
@@ -127,3 +128,31 @@ Combinations can also be used:
 $ python3 -m ciall.cmd --conf=ciall_conf.yaml --infile=input.tsv > output.tsv
 $ cat input.tsv | python3 -m ciall.cmd --conf=ciall_conf.yaml --outfile=output.tsv
 ```
+
+
+## Running Accuracy Tests
+
+To test the accuracy of the pipeline running with a given configuration against pre-tagged and checked texts,
+run the pipeline with the `--accuracy` argument. This requires an input text which already has the `USAS` column.
+The contents of this column will be used as the 'expected' output, compared with the output of the pipeline,
+and scored accordingly.
+
+To run the example accuracy test:
+
+```bash
+$ python3 -m ciall.cmd --accuracy --conf=example/example_conf.yaml --infile=example/example_accuracy_test.tsv
+```
+
+Also note that this can be run on a folder containing multiple input TSV files. This is necessary to calculate accuracy across a larger corpus.
+
+```bash
+$ python3 -m ciall.cmd --accuracy --conf=example/example_conf.yaml --infile=my_corpus_of_tsv_texts/
+```
+
+This will print a report containing the following values:
+- **Num tokens** - The total number of tokens
+- **Lexical coverage** - The number and percentage of tokens that were assigned a USAS tag by the pipeline (i.e. not `Z99`)
+- **Fully correct MUSAS tags (all tokens)** - The number & percentage of tokens for which the pipeline assigned *exactly* the same USAS value that is in the `USAS` column in the input file.
+- **Fully correct MUSAS tags (content tokens)** - Same as the value above but only counting content tokens (Nouns, Verbs, Adjectives, Adverbs & Numerals)
+- **Overall semantic tag accuracy (all tokens)** - The overall semantic tag accuracy, calculated as described in Czerniak & Uí Dhonnchadha (2024).
+- **Overall semantic tag accuracy (content tokens)** - The overall semantic tag accuracy, calculated as described in Czerniak & Uí Dhonnchadha (2024), but only counting content words.
