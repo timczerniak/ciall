@@ -5,6 +5,16 @@
 It is roughly pronounced `[ki:l]`, similar to the English word *keel*.
 
 
+## Usage and Referencing
+
+The licence for usage GPU, described in [LICENSE.txt](LICENSE.txt).
+Additionally, if using this code, please acknowledge and reference the following publication:
+
+```
+Czerniak, T., & Uí Dhonnchadha, E. (2024). Towards Semantic Tagging for Irish. In Proceedings of the 2024 Joint International Conference on Computational Linguistics, Language Resources and Evaluation (LREC-COLING 2024) (pp. 16643-16652).
+```
+
+
 ## Installing requirements
 
 The pipeline requires:
