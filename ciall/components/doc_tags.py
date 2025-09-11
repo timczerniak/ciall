@@ -54,6 +54,7 @@ def doc_tags_function(doc):
     for token in doc:
         if token._.musas_tags and len(token._.musas_tags) > 1:
             curr_tags = token._.musas_tags
+            # TODO: if the list contains Z-tags don't do anything
             def sortfunc(compound_tag):
                 if compound_tag == '':
                     return -1000
