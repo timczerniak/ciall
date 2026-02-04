@@ -51,8 +51,8 @@ Token.set_extension("musas_mwe_indexes_str", method=musas_mwe_indexes_str)
 
 WILDCARD_LEXICON = {
     'Mn': "N1",
-    'Mo': "N1",
-    'Mc': "N5",
+    'Mo': "N4",
+    'Mc': "N1",
     'Ms': "Z5",
     'Np': "Z0",
     'C':  "Z5",
@@ -70,6 +70,7 @@ WILDCARD_LEXICON = {
     'Fb': "Z9",
     'Fq': "Z9",
     'Fc': "I1",
+    'Fp': "Z9",
     'Pp': "Z8",
     'Px': "Z5",
     'Pq': "Z5",
@@ -92,9 +93,14 @@ WILDCARD_LEXICON = {
     'Ud': "Z5",
     'Up': "Z1",
     'Uw': "Z5",
-    'W':  "Z5",
+    'Wp': "Z5",
+    'Ws': "Z5",
     'X*': "Z9",
     'Xa': "Z9",
+}
+
+EXCEPTION_LEXICON = {
+     'Wp-in' : "Z6",
 }
 
 
@@ -182,11 +188,13 @@ class MUSASTagger:
         #         #print(par_short, semantic_tags)
         #         wildcards[par_short] = semantic_tags.split(" ")
 
-        # Run wildcard lemma lexicon
+        # Run wildcard and exception lexicons
         for token in doc:
             #print(token, token._.par_short, token._.musas_tags)
             if token._.par_short in WILDCARD_LEXICON and token._.musas_tags[0] == "Z99":
                 #print(token.text, token._.musas_tags, wildcards[token._.par_short])
                 token._.musas_tags = [WILDCARD_LEXICON[token._.par_short]]
+            if token._.par_long in EXCEPTION_LEXICON:
+                token._.musas_tags = [EXCEPTION_LEXICON[token._.par_long]]
 
         return doc
