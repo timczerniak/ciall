@@ -92,6 +92,8 @@ class TestMusasCompoundTag(unittest.TestCase):
         self.assertEqual(CompoundTag("Q1.2/S2mf").match(CompoundTag("S2")), 0.4)
         self.assertEqual(CompoundTag("Q1.2/S2mf").match(CompoundTag("S2mf/A1.2")), 0.25)
         self.assertEqual(CompoundTag("Q1.2/S2mf").match(CompoundTag("S2/A1.2")), 0.2)
+        self.assertEqual(CompoundTag("S7+/S2.2m").match(CompoundTag("A2/S2")), 0.25)
+        self.assertEqual(CompoundTag("S7+/S2.2m").match(CompoundTag("S2")), 0.5)
 
 
 class TestMusasMultiSenseTag(unittest.TestCase):
