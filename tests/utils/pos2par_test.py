@@ -42,8 +42,8 @@ class TestPos2Par(unittest.TestCase):
         ("Det Qty Idf", "Dq", "Dq", "DET"),
 
         # Copula
-        ("Cop Pres",    "Wp-i", "W", "AUX"),
-        ("Cop Pro Dem", "W",    "W", "AUX"),
+        ("Cop Pres",    "Wp-i", "Wp", "AUX"),
+        ("Cop Pro Dem", "W",    "W",  "AUX"),
 
         # Adverb
         ("Adv Dir", "Rd", "R", "ADV"),
@@ -78,9 +78,9 @@ class TestPos2Par(unittest.TestCase):
         ("Itj", "I", "I", "INTJ"),
 
         # Verbal Particles
-        ("Part Vb Rel Direct", "Q-r",  "Q", "PART"),
-        ("Part Vb Neg",        "Qn",   "Q", "PART"),
-        ("Part Vb Neg Q Past", "Qnqs", "Q", "PART"),
+        ("Part Vb Rel Direct", "Q-r",  "Q",  "PART"),
+        ("Part Vb Neg",        "Qn",   "Qn", "PART"),
+        ("Part Vb Neg Q Past", "Qnqs", "Qn", "PART"),
         #("Part Vb Cmpl",       "Q",    "Q", "PART"), # what is Cmpl?
         #("Part Vb Cond",       "Q",    "Q", "PART"), # Cond isn't covered yet
     ]

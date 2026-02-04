@@ -82,11 +82,11 @@ def pos2par(pos_tags, lemma=None):
 def shorten_par_tag(par_long):
     if par_long == '':
         return ''
-    # Nouns, Verbs, Adjectives, Pronouns, Determiners, Articles, Adpositions, Numerals, Uniques, Other
-    elif par_long[0] in ('N', 'V', 'A', 'P', 'D', 'T', 'S', 'M', 'U', 'X'):
+    # Nouns, Verbs, Adjectives, Pronouns, Determiners, Articles, Adpositions, Numerals, Uniques, Particles, Copula, Other
+    elif par_long[0] in ('N', 'V', 'A', 'P', 'D', 'T', 'S', 'M', 'U', 'Q', 'W', 'X'):
         return par_long[:2]  # Shorten to 2 characters
-    # Adverbs, Conjunctions, Interjections, Punctuation, Abbreviation, Copula, Particles
-    elif par_long[0] in ('R', 'C', 'I', 'F', 'Y', 'W', 'Q'):
+    # Adverbs, Conjunctions, Interjections, Punctuation, Abbreviation
+    elif par_long[0] in ('R', 'C', 'I', 'F', 'Y'):
         return par_long[:1]  # Shorten to 1 character
     else:
         return par_long
