@@ -163,6 +163,8 @@ This will print a report containing the following values:
 - **Num tokens** - The total number of tokens
 - **Lexical coverage** - The number and percentage of tokens that were assigned a USAS tag by the pipeline (i.e. not `Z99`)
 - **Fully correct MUSAS tags (all tokens)** - The number & percentage of tokens for which the pipeline assigned *exactly* the same USAS value that is in the `USAS` column in the input file.
+- **Fully correct MUSAS tags (all tokens except punctuation)** - Same as the value above but only counting non-punctuation tokens
 - **Fully correct MUSAS tags (content tokens)** - Same as the value above but only counting content tokens (Nouns, Verbs, Adjectives, Adverbs & Numerals)
-- **Overall semantic tag accuracy (all tokens)** - The overall semantic tag  accuracy calculation takes account for partial correctness, e.g. where the correct semantic tag is among the list of assigned tags (for details, see Czerniak & Uí Dhonnchadha (2024)
+- **Overall semantic tag accuracy (all tokens)** - The overall semantic tag  accuracy calculation takes account for partial correctness, e.g. where the correct semantic tag is among the list of assigned tags (for details, see Czerniak & Uí Dhonnchadha (2024))
+- **Overall semantic tag accuracy (all tokens except punctuation)** - The overall semantic tag accuracy, calculated as described in Czerniak & Uí Dhonnchadha (2024), but excluding punctuation.
 - **Overall semantic tag accuracy (content tokens)** - The overall semantic tag accuracy, calculated as described in Czerniak & Uí Dhonnchadha (2024), but only counting content words.

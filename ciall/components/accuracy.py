@@ -12,12 +12,14 @@ Doc.set_extension("accuracy_report", default=None)
 class AccuracyReport(object):
     def __init__(self):
         # Initialise members that can then be 
-        self.num_tokens = 0              # The total number of tokens in the doc
-        self.num_z99 = 0                 # The number of tokens with no Semantic Tag matched (Z99: Unmatched)
-        self.num_fully_correct = 0       # The number of tokens with fully correct MUSAS tags
-        self.num_cont_fully_correct = 0  # The number of content word tokens with fully correct MUSAS tags
-        self.all_match_values = []       # match values for all tokens
-        self.cont_match_values = []      # match values for content words
+        self.num_tokens = 0                  # The total number of tokens in the doc
+        self.num_z99 = 0                     # The number of tokens with no Semantic Tag matched (Z99: Unmatched)
+        self.num_fully_correct = 0           # The number of tokens with fully correct MUSAS tags
+        self.num_nopunct_fully_correct = 0   # The number of tokens (excluding punctuation) with fully correct MUSAS tags
+        self.num_cont_fully_correct = 0      # The number of content word tokens with fully correct MUSAS tags
+        self.all_match_values = []           # match values for all tokens
+        self.nopunct_match_values = []       # match values for all tokens excluding punctuation
+        self.cont_match_values = []          # match values for content words
     
     def add_token(self, par_short: str, musas_tags: list[str], expected_musas_tag: str):
         # Increment number of tokens
@@ -36,6 +38,12 @@ class AccuracyReport(object):
         if mv == 1.0:
             self.num_fully_correct += 1
 
+        # If it's not punctuation, add info to nopunct calculation
+        if par_short[0] != 'F':
+            if mv == 1.0:
+                self.num_nopunct_fully_correct += 1
+            self.nopunct_match_values.append(mv)
+
         # If it's a content word, add info to content calculation
         if par_short[0] in ('N', 'V', 'A', 'R', 'M'):  # content words
             if mv == 1.0:
@@ -46,10 +54,13 @@ class AccuracyReport(object):
         self.lexical_coverage = round(((self.num_tokens - self.num_z99) / self.num_tokens) * 100.0, 3)
 
         self.pc_all_fully_correct = round((self.num_fully_correct / self.num_tokens) * 100, 3)
+        self.pc_nopunct_fully_correct = round((self.num_nopunct_fully_correct / len(self.nopunct_match_values)) * 100, 3)
         self.pc_cont_fully_correct = round((self.num_cont_fully_correct / len(self.cont_match_values)) * 100, 3)
 
         self.all_accuracy = sum(self.all_match_values) / len(self.all_match_values)
         self.pc_all_accuracy = round(self.all_accuracy * 100, 3)
+        self.nopunct_accuracy = sum(self.nopunct_match_values) / len(self.nopunct_match_values)
+        self.pc_nopunct_accuracy = round(self.nopunct_accuracy * 100, 3)
         self.cont_accuracy = sum(self.cont_match_values) / len(self.cont_match_values)
         self.pc_cont_accuracy = round(self.cont_accuracy * 100, 3)
 
@@ -61,9 +72,12 @@ class AccuracyReport(object):
         report_str += "Lexical coverage: %s%%\n" % self.lexical_coverage
         report_str += "Fully correct MUSAS tags (all tokens): %s%% (%s token(s))\n" % \
                       (self.pc_all_fully_correct, self.num_fully_correct)
+        report_str += "Fully correct MUSAS tags (all tokens except punctuation): %s%% (%s token(s))\n" % \
+                      (self.pc_nopunct_fully_correct, self.num_nopunct_fully_correct)
         report_str += "Fully correct MUSAS tags (content tokens): %s%% (%s token(s))\n" % \
                       (self.pc_cont_fully_correct, self.num_cont_fully_correct)
         report_str += "Overall semantic tag accuracy (all tokens): %s%%\n" % self.pc_all_accuracy
+        report_str += "Overall semantic tag accuracy (all tokens except punctuation): %s%%\n" % self.pc_nopunct_accuracy
         report_str += "Overall semantic tag accuracy (content tokens): %s%%\n" % self.pc_cont_accuracy
         return report_str
     
@@ -74,8 +88,10 @@ class AccuracyReport(object):
             combined_report.num_tokens += report.num_tokens
             combined_report.num_z99 += report.num_z99
             combined_report.num_fully_correct += report.num_fully_correct
+            combined_report.num_nopunct_fully_correct += report.num_nopunct_fully_correct
             combined_report.num_cont_fully_correct += report.num_cont_fully_correct
             combined_report.all_match_values.extend(report.all_match_values)
+            combined_report.nopunct_match_values.extend(report.nopunct_match_values)
             combined_report.cont_match_values.extend(report.cont_match_values)
         combined_report.calculate_totals()
         return combined_report
@@ -91,8 +107,8 @@ def accuracy_function(doc):
     for token in doc:
         try:
             report.add_token(par_short=token._.par_short,
-                            musas_tags=token._.musas_tags,
-                            expected_musas_tag=token._.expected_musas_tag)
+                             musas_tags=token._.musas_tags,
+                             expected_musas_tag=token._.expected_musas_tag)
         except Exception:
             print("problem with token", token.text, token._.par_short, token._.musas_tags)
             raise
