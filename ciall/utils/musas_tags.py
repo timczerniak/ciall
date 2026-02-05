@@ -463,6 +463,14 @@ class CompoundTag:
         Compare this CompoundTag with another and return a match value.
         Returns a match value (0.0 -> 1.0).
         """
+
+        # Special case: exact match for all component tags (e.g. S2/A2 comparing with S2/A2)
+        # This is necessary because, in the case where top-level category is the same (e.g. S2/S7),
+        # we get both partial and full non-zero matches in the calculation below,
+        # which then averages out at <1.0
+        if self.tags == other.tags:
+            return 1.0
+
         non_zero_matches = []
         self_match_map = [0 for _ in self.tags]
         other_match_map = [0 for _ in other.tags]
